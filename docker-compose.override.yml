@@ -3,3 +3,7 @@ services:
   netbox:
     ports:
       - 8004:8080
+    volumes:
+    - /root/netbox/configuration:/etc/netbox/config:z,ro
+    - /root/netbox/reports:/etc/netbox/reports:z,ro
+    - /root/netbox/scripts:/etc/netbox/scripts:z,ro
