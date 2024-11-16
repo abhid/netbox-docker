@@ -1,27 +1,45 @@
 {
   "listeners": {
-    "*:8080": {
-      "pass": "routes"
+    "0.0.0.0:8080": {
+      "pass": "routes/main"
+    },
+    "[::]:8080": {
+      "pass": "routes/main"
+    },
+    "0.0.0.0:8081": {
+      "pass": "routes/status"
+    },
+    "[::]:8081": {
+      "pass": "routes/status"
     }
   },
-
-  "routes": [
-    {
-      "match": {
-        "uri": "/static/*"
+  "routes": {
+    "main": [
+      {
+        "match": {
+          "uri": "/static/*"
+        },
+        "action": {
+          "share": "/opt/netbox/netbox${uri}"
+        }
       },
-      "action": {
-        "share": "/opt/netbox/netbox${uri}"
+      {
+        "action": {
+          "pass": "applications/netbox"
+        }
       }
-    },
-
-    {
-      "action": {
-        "pass": "applications/netbox"
+    ],
+    "status": [
+      {
+        "match": {
+          "uri": "/status/*"
+        },
+        "action": {
+          "proxy": "http://unix:/opt/unit/unit.sock"
+        }
       }
-    }
-  ],
-
+    ]
+  },
   "applications": {
     "netbox": {
       "type": "python 3",
@@ -35,6 +53,5 @@
       }
     }
   },
-
   "access_log": "/dev/stdout"
 }
